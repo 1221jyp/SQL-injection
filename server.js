@@ -37,25 +37,23 @@ client
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public")); // HTML 파일을 제공하기 위한 폴더
 
-
+// 인젝션 페이지 제공
 app.get("/injection", (req, res) => {
-    res.sendFile(__dirname + '/public/index.html'); // index.html 파일 제공
+  res.sendFile(__dirname + "/public/index.html"); // index.html 파일 제공
 });
-
-
 
 // 로그인 처리
 app.post("/injection/login", async (req, res) => {
   const { username, password } = req.body;
 
-  // SQL 쿼리 (SQL 인젝션 취약점 포함)
-  const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+  // Prepared Statements 사용
+  const query = "SELECT * FROM users WHERE username = $1 AND password = $2";
+  const values = [username, password];
 
   try {
-    const result = await client.query(query);
+    const result = await client.query(query, values);
     if (result.rows.length > 0) {
       // 로그인 성공: 사용자 정보를 출력
-      //const user = result.rows; // 첫 번째 사용자 정보
       console.log(result.rows);
       res.send(`로그인 성공! 사용자 정보: <br> 결과: ${JSON.stringify(result.rows)}`);
     } else {
