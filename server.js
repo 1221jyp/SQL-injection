@@ -6,7 +6,7 @@ const { Client } = require("pg");
 dotenv = require("dotenv").config();
 
 const app = express();
-const port = 6000;
+const port = 3000;
 
 // PostgreSQL 클라이언트 설정
 const client = new Client({
@@ -37,8 +37,15 @@ client
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public")); // HTML 파일을 제공하기 위한 폴더
 
+
+app.get("/injection", (req, res) => {
+    res.sendFile(__dirname + '/public/index.html'); // index.html 파일 제공
+});
+
+
+
 // 로그인 처리
-app.post("/login", async (req, res) => {
+app.post("/injection/login", async (req, res) => {
   const { username, password } = req.body;
 
   // SQL 쿼리 (SQL 인젝션 취약점 포함)
