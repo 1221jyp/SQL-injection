@@ -6,7 +6,7 @@ const { Client } = require("pg");
 dotenv = require("dotenv").config();
 
 const app = express();
-const port = 3000;
+const port = 6000;
 
 // PostgreSQL 클라이언트 설정
 const client = new Client({
@@ -47,7 +47,10 @@ app.post("/login", async (req, res) => {
   try {
     const result = await client.query(query);
     if (result.rows.length > 0) {
-      res.send("로그인 성공!");
+      // 로그인 성공: 사용자 정보를 출력
+      //const user = result.rows; // 첫 번째 사용자 정보
+      console.log(result.rows);
+      res.send(`로그인 성공! 사용자 정보: <br> 결과: ${JSON.stringify(result.rows)}`);
     } else {
       res.send("로그인 실패: 사용자 이름 또는 비밀번호가 잘못되었습니다.");
     }
